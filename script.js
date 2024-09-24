@@ -1,3 +1,13 @@
+// Dropdown Menu functionality
+document.querySelector('.dropdown-button').addEventListener('click', function() {
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    if (dropdownMenu.style.display === 'block') {
+        dropdownMenu.style.display = 'none';
+    } else {
+        dropdownMenu.style.display = 'block';
+    }
+});
+
 function loadDatas() {
     fetch('https://dummyjson.com/products')
         .then((response) => {
@@ -16,7 +26,7 @@ function loadDatas() {
                     <div class="card" onclick="handleClick(${products[i].id})">
                         <img src="${products[i].thumbnail}" alt="${products[i].title}">
                         <h3>${products[i].title}</h3>
-                        <p>${products[i].description}</p>
+                        <p>${products[i].description.substring(0, 30)}</p>
                         <div class="price">$${products[i].price}</div>
                     </div>`;
             }
@@ -33,50 +43,67 @@ function handleClick(id) {
 }
 
 function loadUserDatas() {
-  let location = window.location;
-  let querystring = location.search;
-  let urlParams = new URLSearchParams(querystring);
-  let id = urlParams.get("id");
-
-  let xhr = new XMLHttpRequest();
-  xhr.open("get", `https://dummyjson.com/products/${id}`);
-  xhr.send();
-
-  xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-              let userData = xhr.response;
-              let parsed_userData = JSON.parse(userData);
-
-              let dataContainer1 = document.getElementById("details");
-
-              let dcards = `
-                  <div class="dcard">
-                      <div><img src="${parsed_userData.thumbnail}" alt="${parsed_userData.title}" height="500" width="500"></div>
-                      <div class="dtext">
-                          <h3>${parsed_userData.title}</h3>
-                          <p>Note: ${parsed_userData.description}...</p>
-                          <p>Category: ${parsed_userData.category} </p>
-                          <div class="price">$${parsed_userData.price}</div><br>
-                          <div class="rating">Rating : ${parsed_userData.rating} ⭐</div><br>
-                          <div class="rating">Count : ${parsed_userData.stock} left</div><br>
-                          <button id="add-to-cart-btn">Add to Cart</button>
-                      </div>
-                  </div>`;
-
-              dataContainer1.innerHTML = dcards;
-
-              document.getElementById("add-to-cart-btn").addEventListener("click", function() {
-                  addToCart(parsed_userData);
-              });
-
-              return;
-          } else {
-              alert("Failed to load response!");
-          }
-      }
-  };
-}
+    let location = window.location;
+    let querystring = location.search;
+    let urlParams = new URLSearchParams(querystring);
+    let id = urlParams.get("id");
+  
+    let xhr = new XMLHttpRequest();
+    xhr.open("get", `https://dummyjson.com/products/${id}`);
+    xhr.send();
+  
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                let userData = xhr.response;
+                let parsed_userData = JSON.parse(userData);
+  
+                let dataContainer1 = document.getElementById("details");
+  
+                let dcards = `
+                    <div class="dcard">
+                        <div><img src="${parsed_userData.thumbnail}" alt="${parsed_userData.title}" height="500" width="500"></div>
+                        <div class="dtext">
+                            <h3>${parsed_userData.title}</h3> <br> <br>
+                            <p class="p1">Note: <i>${parsed_userData.description}...<i></p> <br>
+                            <p class="p2">Category: ${parsed_userData.category} </p> <br>
+                            <div class="price">$${parsed_userData.price}</div><br>
+                            <div class="rating">Rating : ${parsed_userData.rating} ⭐</div><br>
+                            <div class="rating">Available : ${parsed_userData.stock} left!</div><br>
+                            <button id="buy-btn">Buy Now</button>
+                            <button id="add-to-cart-btn"></button>
+                        </div>
+                    </div>`;
+  
+                dataContainer1.innerHTML = dcards;
+  
+                let cart = getCart();
+                let existingProduct = cart.find(item => item.id === parsed_userData.id);
+                let cartBtn = document.getElementById("add-to-cart-btn");
+  
+                if (existingProduct) {
+                    cartBtn.textContent = "Go to Cart";
+                    cartBtn.addEventListener("click", function() {
+                        window.location.href = "cart.html";
+                    });
+                }
+                
+                 else {
+                    cartBtn.textContent = "Add to Cart";
+                    cartBtn.addEventListener("click", function() {
+                        addToCart(parsed_userData);
+                        cartBtn.textContent = "Go to Cart";
+                    });
+                }
+  
+                return;
+            } else {
+                alert("Failed to load response!");
+            }
+        }
+    };
+  }
+  
 
 function updateCartCount() {
   let cart = getCart();
@@ -124,45 +151,85 @@ function removeFromCart(id) {
 }
 
 function loadCart() {
-  let cart = getCart();
-  let cartContainer = document.getElementById("cart-container");
-  let cartSummary = document.getElementById("cart-summary");
-  let totalPrice = 0;
-
-  if (cart.length === 0) {
-      cartContainer.innerHTML = "<p>Your cart is empty.</p>";
-      cartSummary.style.display = "none";
-      return;
+    let cart = getCart();
+    let cartContainer = document.getElementById("cart-container");
+    let cartSummary = document.getElementById("cart-summary");
+    let totalPrice = 0;
+  
+    if (cart.length === 0) {
+        cartContainer.innerHTML = "<p>Your cart is empty.</p>";
+        cartSummary.style.display = "none";
+        return;
+    }
+  
+    cartSummary.style.display = "block";
+  
+    let cartItemsHTML = '';
+  
+    cart.forEach(item => {
+        totalPrice += item.price * item.quantity;
+        cartItemsHTML += `
+            <div class="cart-item">
+                <img src="${item.thumbnail}" alt="${item.title}">
+                <div class="cart-item-details">
+                    <div>
+                    <h3>${item.title}</h3>
+                    <p>Price: $${item.price}</p>
+                    <p>Quantity: ${item.quantity}</p> <br>
+                    <button class="increment-btn" onclick="incrementQuantity(${item.id})">+</button>
+                    <button class="decrement-btn" onclick="decrementQuantity(${item.id})">-</button>
+                    </div>
+                    <div>
+                    <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+  
+    cartContainer.innerHTML = cartItemsHTML;
+    document.getElementById("total-price").textContent = totalPrice.toFixed(2);
   }
-
-  cartSummary.style.display = "block";
-
-  let cartItemsHTML = '';
-
-  cart.forEach(item => {
-      totalPrice += item.price * item.quantity;
-      cartItemsHTML += `
-          <div class="cart-item">
-              <img src="${item.thumbnail}" alt="${item.title}">
-              <div class="cart-item-details">
-                  <h3>${item.title}</h3>
-                  <p>Price: $${item.price}</p>
-                  <p>Quantity: ${item.quantity}</p>
-              </div>
-              <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
-          </div>
-      `;
-  });
-
-  cartContainer.innerHTML = cartItemsHTML;
-  document.getElementById("total-price").textContent = totalPrice.toFixed(2);
-}
+  
+  function incrementQuantity(id) {
+    let cart = getCart();
+    let product = cart.find(item => item.id === id);
+    if (product) {
+        product.quantity += 1;
+        saveCart(cart);
+        loadCart();
+    }
+  }
+  function decrementQuantity(id) {
+    let cart = getCart();
+    let product = cart.find(item => item.id === id);
+    if (product) {
+        if(product.quantity==1){
+            // alert("cannot decrement! if you want, remove it")
+            removeFromCart(product.id)
+        }
+        else{
+            product.quantity -= 1;
+            saveCart(cart);
+            loadCart();
+        }
+        
+    }
+  }
+  
 
 
 function checkout() {
-  alert("Proceeding to checkout!");
-}
+  localStorage.removeItem('cart');
+  updateCartCount();
+  let cartContainer = document.getElementById("cart-container");
+  cartContainer.innerHTML = "<p>Your cart is empty.</p>";
 
+  let cartSummary = document.getElementById("cart-summary");
+  cartSummary.style.display = "none";
+  alert("Proceeding to checkout!");
+  
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   let checkoutBtn = document.getElementById("checkout-btn");

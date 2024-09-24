@@ -3,6 +3,135 @@
     padding: 0;
     /* background-color: antiquewhite; */
 }
+
+
+
+*{
+    padding: 0;
+    margin: 0;
+}
+.cont{
+    /* background-color: antiquewhite; */
+    width: 85vw;
+    height: 40px;
+    margin: auto;
+}
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    background-color: #f5f5f5f8;
+}
+.incont{
+    display: flex;
+    /* gap: 40px; */
+}
+.incont1{
+    display: flex;
+    
+}
+.incont1-1{
+    padding-right: 30px;
+    display: flex;
+    border-right: .5px solid gray;
+    gap: 10px;
+}
+.incont1-2{
+    display: flex;
+    padding-left: 30px;
+    padding-right: 30px;
+    gap: 10px;
+    border-right: .5px solid grey;
+}
+.incont1-2 select{
+    border: none;
+}
+.incont1-3{
+    display: flex;
+    padding-left: 30px;
+    gap: 10px;
+}
+.cont1{
+    display: flex;
+    justify-content: space-between;
+}
+.inscont1-1{
+    padding-top: 20px;
+}
+.inscont1-3{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.inscont1-2{
+    display: flex;
+    gap: 60px;
+    align-items: center;
+}
+.inscont1-2{
+    font-weight: 700;
+}
+.department-menu {
+    position: relative;
+}
+.cont2{
+    display: flex;
+    gap: 20px;
+}
+
+.dropdown-button {
+    background-color: #8CC34B;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    width: 260px;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    width: 260px;
+    z-index: 1;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+}
+.search-bar {
+    display: flex;
+    gap: 200px;
+}
+
+.search-bar input {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-right: none;
+}
+
+.search-bar button {
+    padding: 10px;
+    background-color: #8CC34B;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+
+
 .header{
     background-color: rgb(228, 226, 226);
 }
@@ -24,7 +153,7 @@
 .card {
     border: 1px solid #ddd;
     border-radius: 10px;
-    width: 300px;
+    width: 280px;
     margin: 15px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     overflow: hidden;
@@ -36,7 +165,8 @@
 }
  .card h3 {
     padding: 10px 0;
-    font-size: 13px;
+    font-size: 18px;
+    color: brown;
  }  
 #btn{
     background-color: lightgreen;
@@ -64,12 +194,26 @@ a{
     color: black;
 }
 #add-to-cart-btn{
-    background-color: #85b186;
-    padding: 5px 10px;
+    background-color: #2cdb2f;
+    padding: 10px 20px;
     border-radius: 10px;
+    font-size: 16px;
+    margin-left: 20px;
 }
 #add-to-cart-btn:hover{
-    background-color: #8985b1;
+    background-color: #9088ef;
+    border-radius: 11px;
+}
+
+#buy-btn{
+    background-color: #cadb2c;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+#buy-btn:hover{
+    background-color: red;
     border-radius: 11px;
 }
 
@@ -99,7 +243,6 @@ nav a:hover {
     color: #555;
 }
 
-/* Cart Container Styles  */
 .cart-container {
     display: flex;
     flex-direction: column;
@@ -128,6 +271,9 @@ nav a:hover {
 .cart-item-details {
     flex: 1;
     margin-left: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .cart-item-details h3 {
@@ -138,6 +284,18 @@ nav a:hover {
 .cart-item-details .price {
     font-size: 16px;
     font-weight: bold;
+}
+.increment-btn{
+    font-size: 16px;
+    padding: 2px 5px;
+    background: green;
+}
+
+.decrement-btn{
+    font-size: 16px;
+    padding: 2px 7px;
+    margin-left: 20px;
+    background-color: red;
 }
 
 .remove-btn {
@@ -242,6 +400,10 @@ footer{
     margin-bottom:0;
   }
 
+  .dashbd{
+    background-color: aliceblue;
+  }
+
 @media (max-width: 768px) {
     .cart-item {
         flex-direction: column;
@@ -294,6 +456,7 @@ footer{
     .dcard img{
         /* border: 1px solid gray; */
         box-shadow: 20px 20px 10px grey;
+        background-color: white;
     
     
     }
@@ -304,10 +467,19 @@ footer{
         /* box-shadow: 20px 20px 50px brown; */
     
     }
+    .dtext .p1{
+        color: darkgreen;
+        font-size: 17px;
+    }
+    .dtext .p2{
+        font-size: 20px;
+        color: blue;
+    }
     .dcard h3{
+        color: brown;
         font-size: 32px;
         text-align: center;
-        text-decoration: underline;
+        text-decoration: underline black;
     }
     
     .dcard p{
@@ -317,5 +489,8 @@ footer{
     .dcard .price{
         font-weight: 700;
         font-size: 20px;
+    }
+    .dtext .rating{
+        font-size: 17px;
     }
 }
